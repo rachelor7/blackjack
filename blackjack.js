@@ -39,7 +39,7 @@ const buildDeck = () => {
       deck.push(values[j] + "-" + types[i]);
     }
   }
-  console.log("unshuffled deck", deck);
+  // console.log("unshuffled deck", deck);
 };
 
 const shuffleDeck = () => {
@@ -54,7 +54,7 @@ const shuffleDeck = () => {
     deck[i] = deck[j];
     deck[j] = temp;
   }
-  console.log("shuffled deck", deck);
+  // console.log("shuffled deck", deck);
 };
 
 const startGame = () => {
@@ -79,20 +79,56 @@ const startGame = () => {
     // append img to div element with id 'dealer-cards'
     document.getElementById("dealer-cards").append(cardImg);
   }
-  console.log("dealer sum", dealerSum);
+  // console.log("dealer sum", dealerSum);
 
   // your hand
   for (let i = 0; i < 2; i++) {
     getPlayerCard();
   }
-  console.log("your sum", yourSum);
+  // console.log("your sum", yourSum);
 
   document.getElementById("hit").addEventListener("click", hit);
+  document.getElementById("stay").addEventListener("click", stay);
+};
+
+const stay = () => {
+  dealerSum = reduceAce(dealerSum, dealerAceCount);
+  yourSum = reduceAce(yourSum, yourAceCount);
+
+  canHit = false;
+
+  // reveal dealer hidden card
+  document.getElementById("hidden").src = "./cards/" + hidden + ".png";
+
+  tally();
+  finalResults();
+};
+
+const finalResults = () => {
+  let message = "";
+
+  if (yourSum > 21) {
+    message = "You Lose";
+  } else if (dealerSum > 21) {
+    message = "You win!";
+  } else if (dealerSum === yourSum) {
+    message = "Tie!";
+  } else if (yourSum > dealerSum) {
+    message = "You win!";
+  } else if (yourSum < dealerSum) {
+    message = "You Lose!";
+  }
+
+  document.getElementById("results").innerText = message;
+};
+
+const tally = () => {
+  document.getElementById("dealer-sum").innerText = dealerSum;
+  document.getElementById("your-sum").innerText = yourSum;
 };
 
 const hit = () => {
   if (!canHit) {
-    console.log("You are Over");
     return;
   }
 
@@ -101,6 +137,8 @@ const hit = () => {
 
   if (reduceAce(yourSum, yourAceCount) > 21) {
     canHit = false;
+    stay();
+    return;
   }
 };
 
@@ -111,7 +149,7 @@ reduceAce = (yourSum, yourAceCount) => {
     yourAceCount -= 1;
   }
 
-  console.log("reducedSum", playerSum);
+  // console.log("reducedSum", playerSum);
   return playerSum;
 };
 
