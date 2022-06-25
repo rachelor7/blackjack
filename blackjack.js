@@ -7,7 +7,7 @@ var yourAceCount = 0;
 var hidden;
 var deck = [];
 
-// allows player to draw while ur sum <= 21
+// allows player to draw while player sum <= 21
 let canHit = true;
 
 window.onload = function () {
@@ -58,9 +58,11 @@ const shuffleDeck = () => {
 };
 
 const startGame = () => {
+  // dealer hand
   hidden = deck.pop();
   dealerSum += getValue(hidden);
   dealerAceCount += checkAce(hidden);
+
   // console.log("hidden card", hidden);
   // console.log("dealer sum", dealerSum);
 
@@ -77,7 +79,36 @@ const startGame = () => {
     // append img to div element with id 'dealer-cards'
     document.getElementById("dealer-cards").append(cardImg);
   }
-  console.log(dealerSum);
+  console.log("dealer sum", dealerSum);
+
+  // your hand
+  for (let i = 0; i < 2; i++) {
+    let cardImg = document.createElement("img");
+    // grab card from dec
+    let card = deck.pop();
+    cardImg.src = "./cards/" + card + ".png";
+    // increment
+    yourSum += getValue(card);
+    yourAceCount += checkAce(card);
+    // append img to div element with id 'dealer-cards'
+    document.getElementById("your-cards").append(cardImg);
+  }
+  console.log("your sum", yourSum);
+
+  document.getElementById("hit").addEventListener("click", hit);
+};
+
+const hit = () => {
+  if (!canHit) return;
+  let cardImg = document.createElement("img");
+  // grab card from dec
+  let card = deck.pop();
+  cardImg.src = "./cards/" + card + ".png";
+  // increment
+  yourSum += getValue(card);
+  yourAceCount += checkAce(card);
+  // append img to div element with id 'dealer-cards'
+  document.getElementById("your-cards").append(cardImg);
 };
 
 const getValue = (card) => {
