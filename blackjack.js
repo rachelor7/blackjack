@@ -83,15 +83,7 @@ const startGame = () => {
 
   // your hand
   for (let i = 0; i < 2; i++) {
-    let cardImg = document.createElement("img");
-    // grab card from dec
-    let card = deck.pop();
-    cardImg.src = "./cards/" + card + ".png";
-    // increment
-    yourSum += getValue(card);
-    yourAceCount += checkAce(card);
-    // append img to div element with id 'dealer-cards'
-    document.getElementById("your-cards").append(cardImg);
+    getPlayerCard();
   }
   console.log("your sum", yourSum);
 
@@ -99,14 +91,41 @@ const startGame = () => {
 };
 
 const hit = () => {
-  if (!canHit) return;
+  if (!canHit) {
+    console.log("You are Over");
+    return;
+  }
+
+  // can Hit (not over)
+  getPlayerCard();
+
+  if (reduceAce(yourSum, yourAceCount) > 21) {
+    canHit = false;
+  }
+};
+
+reduceAce = (yourSum, yourAceCount) => {
+  let playerSum = yourSum;
+  while (yourSum > 21 && yourAceCount > 0) {
+    playerSum -= 10;
+    yourAceCount -= 1;
+  }
+
+  console.log("reducedSum", playerSum);
+  return playerSum;
+};
+
+const getPlayerCard = () => {
   let cardImg = document.createElement("img");
+
   // grab card from dec
   let card = deck.pop();
   cardImg.src = "./cards/" + card + ".png";
+
   // increment
   yourSum += getValue(card);
   yourAceCount += checkAce(card);
+
   // append img to div element with id 'dealer-cards'
   document.getElementById("your-cards").append(cardImg);
 };
